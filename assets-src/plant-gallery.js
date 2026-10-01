@@ -15,9 +15,9 @@ const ensureLightbox = () => {
 		<div id="${LightboxId}" class="blueimp-gallery blueimp-gallery-controls" role="dialog" aria-modal="true" aria-hidden="true">
 			<div class="slides" aria-live="polite"></div>
 			<h3 class="title"></h3>
-			<a class="prev" role="button" aria-label="Previous" aria-controls="${LightboxId}">‹</a>
-			<a class="next" role="button" aria-label="Next" aria-controls="${LightboxId}">›</a>
-			<a class="close" role="button" aria-label="Close" aria-controls="${LightboxId}">×</a>
+			<a class="prev" role="button" aria-label="Previous" aria-controls="${LightboxId}"></a>
+			<a class="next" role="button" aria-label="Next" aria-controls="${LightboxId}"></a>
+			<a class="close" role="button" aria-label="Close" aria-controls="${LightboxId}"></a>
 		</div>`);
 };
 

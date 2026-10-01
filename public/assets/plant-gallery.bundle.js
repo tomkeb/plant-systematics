@@ -2,7 +2,7 @@
 		<div id="${m}" class="blueimp-gallery blueimp-gallery-controls" role="dialog" aria-modal="true" aria-hidden="true">
 			<div class="slides" aria-live="polite"></div>
 			<h3 class="title"></h3>
-			<a class="prev" role="button" aria-label="Previous" aria-controls="${m}">\u2039</a>
-			<a class="next" role="button" aria-label="Next" aria-controls="${m}">\u203A</a>
-			<a class="close" role="button" aria-label="Close" aria-controls="${m}">\xD7</a>
+			<a class="prev" role="button" aria-label="Previous" aria-controls="${m}"></a>
+			<a class="next" role="button" aria-label="Next" aria-controls="${m}"></a>
+			<a class="close" role="button" aria-label="Close" aria-controls="${m}"></a>
 		</div>`)},b=class extends HTMLElement{connectedCallback(){this.addEventListener("click",r=>{let t=r.target.closest("a");t===null||!this.contains(t)||(C(),window.blueimp.Gallery(this.querySelectorAll("a"),{container:`#${m}`,index:t,event:r}))})}};customElements.define("plant-gallery",b);})();
