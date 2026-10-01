@@ -17,12 +17,16 @@ use App\Repository\UserRepository;
 //   referenced row, or as a list of them).
 // A column is [field, header] with an optional third item: "image" (the field holds a photo filename, shown as a
 // thumbnail) or ["orig" => "filename"] (the cell links to the full-size photo named in that field).
+// Entity "singular" and "about": a lowercase singular name and a plain-language sentence for the data model export (bin/export-data-model.php). Field "about":
+// a note for the same export; "internal" leaves a field out of it.
 // Other keys: "label" (a field without one gets no form input, e.g. values set by the upload or computed);
 // "required"; "default" (bool); "auto" ("creator": set to the logged-in user's id on create, "editor": set on every
 // create and edit).
 return [
     'pages' => [
         'title' => 'Static pages',
+        'singular' => 'static page',
+        'about' => 'The fixed pages of the site (home, people, research, courses, laboratory, ...). Each page has its own web address and is written as formatted text.',
         'repository' => PageRepository::class,
         'orderBy' => ['slug' => 'asc'],
         'columns' => [['slug', 'Slug'], ['name', 'Name'], ['date', 'Date']],
@@ -38,6 +42,8 @@ return [
     ],
     'news' => [
         'title' => 'News',
+        'singular' => 'news item',
+        'about' => 'News items, shown newest first, each with its own detail page.',
         'repository' => NewsRepository::class,
         'orderBy' => ['date' => 'desc'],
         'columns' => [['name', 'Name'], ['date', 'Date']],
@@ -52,6 +58,8 @@ return [
     ],
     'theses' => [
         'title' => 'Theses',
+        'singular' => 'thesis',
+        'about' => 'Offered bachelor and master thesis topics, shown on the site grouped by supervisor. Old topics can be archived (hidden) instead of deleted.',
         'repository' => ThesisRepository::class,
         'orderBy' => ['name' => 'asc'],
         'columns' => [['name', 'Name'], ['category', 'Category'], ['supervisor', 'Supervisor'], ['visible', 'Visible']],
@@ -74,6 +82,8 @@ return [
     ],
     'photo-categories' => [
         'title' => 'Photo categories',
+        'singular' => 'photo category',
+        'about' => 'The categories of the photo gallery. A photo can belong to several categories.',
         'repository' => PhotoCategoryRepository::class,
         'orderBy' => ['name' => 'asc'],
         'columns' => [['name', 'Name'], ['nameEn', 'Name (English)']],
@@ -84,12 +94,14 @@ return [
     ],
     'photos' => [
         'title' => 'Photos',
+        'singular' => 'photo',
+        'about' => 'Gallery photos. Every upload is stored in three sizes (thumbnail, medium, original) and can later be replaced by a new file.',
         'repository' => PhotoRepository::class,
         'orderBy' => ['date' => 'desc'],
         'canCreate' => false, // photos are created through the upload form
         'columns' => [['_id', 'ID'], ['filename', 'Photo', 'image'], ['name', 'Name', ['orig' => 'filename']], ['author', 'Author'], ['categoryIds', 'Categories'], ['date', 'Date'], ['visible', 'Visible']],
         'fields' => [
-            ['name' => 'filename', 'type' => 'string', 'required' => true], // set by the upload: lowercase, no diacritics, same in every size directory
+            ['name' => 'filename', 'type' => 'string', 'required' => true, 'about' => 'The image file; set by the upload (lowercase, no diacritics).'],
             ['name' => 'name', 'label' => 'Name', 'type' => 'string'],
             ['name' => 'nameEn', 'label' => 'Name (English)', 'type' => 'string'],
             ['name' => 'desc', 'label' => 'Description (Markdown)', 'type' => 'markdown'],
@@ -104,6 +116,8 @@ return [
     ],
     'users' => [
         'title' => 'Users',
+        'singular' => 'user',
+        'about' => 'The people who can log in to the administration. They can also be chosen as thesis supervisors.',
         'repository' => UserRepository::class,
         'orderBy' => ['surname' => 'asc'],
         'columns' => [['surname', 'Surname'], ['name', 'Name'], ['email', 'Email'], ['adminRights', 'Admin']],
@@ -112,7 +126,7 @@ return [
             ['name' => 'surname', 'label' => 'Surname', 'type' => 'string', 'required' => true],
             ['name' => 'email', 'label' => 'Email (login)', 'type' => 'email', 'required' => true],
             ['name' => 'password', 'label' => 'Password (leave empty to keep the current one)', 'type' => 'password'],
-            ['name' => 'passwordHash', 'type' => 'string', 'required' => true], // set from "password"
+            ['name' => 'passwordHash', 'type' => 'string', 'required' => true, 'internal' => true], // set from "password"
             ['name' => 'registered', 'label' => 'Registered', 'type' => 'date', 'required' => true],
             ['name' => 'adminRights', 'label' => 'Admin rights', 'type' => 'bool'],
         ],
