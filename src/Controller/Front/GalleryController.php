@@ -31,7 +31,7 @@ final class GalleryController extends BaseFrontController
         $categoryId = $request->queryInt('category');
         $criteria = ['visible', '=', true];
         if ($categoryId > 0) {
-            $criteria = [$criteria, 'AND', ['categoryId', '=', $categoryId]];
+            $criteria = [$criteria, 'AND', ['categoryIds', 'CONTAINS', $categoryId]];
         }
 
         $perPage = $this->config->get('perPage.gallery');

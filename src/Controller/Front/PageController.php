@@ -59,7 +59,7 @@ final class PageController extends BaseFrontController
         if ($page === null) {
             return $this->notFound();
         }
-        return $this->view->render('front/page.latte', [
+        return $this->view->render('front/static-page.latte', [
             'page' => $this->locale->localize($page, ['name', 'text']),
         ]);
     }

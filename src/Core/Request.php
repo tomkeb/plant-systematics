@@ -73,6 +73,21 @@ final class Request
         return is_string($value) ? trim($value) : $default;
     }
 
+    /**
+     * Non-empty values of a multi-value input (name="key[]"), e.g. a group of checkboxes.
+     *
+     * @return list<string>
+     */
+    public function postList(string $key): array
+    {
+        $value = $this->post[$key] ?? [];
+        if (!is_array($value)) {
+            return [];
+        }
+        $strings = array_filter($value, 'is_string');
+        return array_values(array_filter(array_map('trim', $strings), fn(string $v): bool => $v !== ''));
+    }
+
     public function postFlag(string $key): bool
     {
         return !empty($this->post[$key]);

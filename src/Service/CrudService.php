@@ -11,7 +11,7 @@ use App\Repository\BaseRepository;
 use App\Repository\UserRepository;
 
 /**
- * Generic admin CRUD driven by config/entities.php: builds list rows and form fields,
+ * Generic admin CRUD driven by config/admin-crud.php: builds list rows and form fields,
  * validates and normalises submitted values, and persists them.
  */
 final class CrudService
@@ -26,7 +26,7 @@ final class CrudService
         private readonly AuthService $auth,
         private readonly UserRepository $users,
     ) {
-        $this->definitions = require $config->get('paths.root') . '/config/entities.php';
+        $this->definitions = require $config->get('paths.root') . '/config/admin-crud.php';
     }
 
     /**
@@ -56,7 +56,7 @@ final class CrudService
     public function listRows(string $entity): array
     {
         $definition = $this->definitions[$entity];
-        $fieldsByName = array_column($definition['fields'], null, 'name');
+        $fieldsByName = array_column($this->fields($entity), null, 'name');
         $rows = [];
         foreach ($this->repository($entity)->all($definition['orderBy']) as $row) {
             $cells = [];
@@ -67,6 +67,7 @@ final class CrudService
                 $cells[] = [
                     'value' => match (true) {
                         is_bool($value) => $value ? 'yes' : '',
+                        is_array($value) => implode(', ', array_map(fn(int|string $v): string => $options[$v] ?? (string) $v, $value)),
                         isset($options[$value]) => $options[$value],
                         default => (string) $value,
                     },
@@ -85,17 +86,21 @@ final class CrudService
     public function formFields(string $entity, ?array $values): array
     {
         $fields = [];
-        foreach ($this->definitions[$entity]['fields'] as $field) {
-            if ($field['type'] === 'author') {
-                continue;
-            }
-            $default = $field['type'] === 'date' ? date('Y-m-d') : ($field['type'] === 'checkbox' ? ($field['default'] ?? false) : '');
+        foreach ($this->fields($entity) as $field) {
+            $default = match ($field['type']) {
+                'date' => date('Y-m-d'),
+                'checkbox' => $field['default'] ?? false,
+                'checkboxes' => [],
+                default => '',
+            };
             $field['value'] = $field['type'] === 'password' ? '' : ($values[$field['name']] ?? $default);
             if ($field['type'] === 'select') {
                 $field['value'] = (string) $field['value'];
             }
-            $field['options'] = $field['type'] === 'select' ? $this->options($field) : [];
-            $field['required'] ??= false;
+            if ($field['type'] === 'checkboxes') {
+                $field['value'] = array_map('strval', $field['value']);
+            }
+            $field['options'] = in_array($field['type'], ['select', 'checkboxes'], true) ? $this->options($field) : [];
             $fields[] = $field;
         }
         return $fields;
@@ -109,21 +114,26 @@ final class CrudService
     {
         $data = [];
         $errors = [];
-        foreach ($this->definitions[$entity]['fields'] as $field) {
+        foreach ($this->fields($entity) as $field) {
             $name = $field['name'];
-            $label = $field['label'] ?? $name;
-            $required = $field['required'] ?? false;
+            $label = $field['label'];
+            $required = $field['required'];
 
             switch ($field['type']) {
-                case 'author':
-                    if ($existing === null) {
-                        $data[$name] = $this->auth->user()['_id'] ?? null;
-                    }
-                    continue 2;
                 case 'password':
                     continue 2; // handled in collectUser()
                 case 'checkbox':
                     $data[$name] = $request->postFlag($name);
+                    continue 2;
+                case 'checkboxes':
+                    $submitted = $request->postList($name);
+                    if ($required && $submitted === []) {
+                        $errors[] = "{$label} is required.";
+                    }
+                    if (array_diff($submitted, array_map('strval', array_keys($this->options($field)))) !== []) {
+                        $errors[] = "{$label} has an invalid value.";
+                    }
+                    $data[$name] = array_values(array_unique(array_map('intval', $submitted)));
                     continue 2;
                 case 'html':
                     $value = $this->sanitizer->clean($request->post($name));
@@ -147,11 +157,31 @@ final class CrudService
             $data[$name] = $value;
         }
 
+        $data = [...$data, ...$this->autoValues($entity, $existing === null)];
+
         if ($entity === 'users') {
             $errors = [...$errors, ...$this->collectUser($data, $request, $existing)];
         }
 
         return [$data, $errors];
+    }
+
+    /**
+     * Fields with an "auto" flag, filled in automatically with the logged-in user's id: "creator" fields on create only,
+     * "editor" fields on every create and edit.
+     *
+     * @return array<string, int|null>
+     */
+    public function autoValues(string $entity, bool $creating): array
+    {
+        $values = [];
+        foreach ($this->definitions[$entity]['fields'] as $def) {
+            $auto = $def['auto'] ?? null;
+            if ($auto === 'editor' || ($auto === 'creator' && $creating)) {
+                $values[$def['name']] = $this->auth->user()['_id'] ?? null;
+            }
+        }
+        return $values;
     }
 
     /**
@@ -211,6 +241,50 @@ final class CrudService
     }
 
     /**
+     * The entity's form fields: the entries of its definition that have a label, with "type" turned into
+     * the widget (text, email, textarea, html, date, select, checkbox, checkboxes, password).
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function fields(string $entity): array
+    {
+        $fields = [];
+        foreach ($this->definitions[$entity]['fields'] as $def) {
+            if (!isset($def['label'])) {
+                continue;
+            }
+            $name = $def['name'];
+            $field = [
+                'name' => $name,
+                'label' => $def['label'],
+                'type' => match ($def['type']) {
+                    'text' => 'textarea',
+                    'bool' => 'checkbox',
+                    'enum', 'ref' => 'select',
+                    'refs' => 'checkboxes',
+                    'string' => 'text',
+                    default => $def['type'], // html, email, date
+                },
+                'required' => $def['required'] ?? false,
+            ];
+            if (isset($def['default'])) {
+                $field['default'] = $def['default'];
+            }
+            if ($def['type'] === 'enum') {
+                $field['options'] = $def['options'];
+            } elseif ($def['type'] === 'ref') {
+                $field['optionsFrom'] = $def['ref'];
+                $field['cast'] = 'int';
+            } elseif ($def['type'] === 'refs') {
+                $field['optionsFrom'] = $def['ref'];
+                $field['multiple'] = true;
+            }
+            $fields[] = $field;
+        }
+        return $fields;
+    }
+
+    /**
      * @param array<string, mixed> $field
      * @return array<string, string> value => label
      */
@@ -222,7 +296,7 @@ final class CrudService
         if (isset($field['optionsFrom'])) {
             [$repositoryClass, $labelField] = $field['optionsFrom'];
             $labelFields = (array) $labelField; // several fields are joined with a space
-            $options = ['' => '—'];
+            $options = ($field['multiple'] ?? false) ? [] : ['' => '—']; // multi-value inputs have no "none" entry
             foreach ($this->container->get($repositoryClass)->all([$labelFields[0] => 'asc']) as $row) {
                 $options[(string) $row['_id']] = implode(' ', array_map(fn (string $f): string => (string) ($row[$f] ?? ''), $labelFields));
             }

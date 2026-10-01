@@ -17,18 +17,6 @@ return [
     'locales' => ['cs', 'en'],
     'defaultLocale' => 'cs',
 
-    // Hand-written navigation: route is relative to the language prefix.
-    'menu' => [
-        ['route' => '/', 'label' => ['cs' => 'Domů', 'en' => 'Home']],
-        ['route' => '/news', 'label' => ['cs' => 'Aktuality', 'en' => 'News']],
-        ['route' => '/people', 'label' => ['cs' => 'Lidé', 'en' => 'People']],
-        ['route' => '/research', 'label' => ['cs' => 'Výzkum', 'en' => 'Research']],
-        ['route' => '/laboratory', 'label' => ['cs' => 'Laboratoř', 'en' => 'Laboratory']],
-        ['route' => '/courses', 'label' => ['cs' => 'Výuka', 'en' => 'Courses']],
-        ['route' => '/theses', 'label' => ['cs' => 'Závěrečné práce', 'en' => 'Theses']],
-        ['route' => '/gallery', 'label' => ['cs' => 'Galerie', 'en' => 'Gallery']],
-    ],
-
     'perPage' => ['news' => 10, 'gallery' => 24],
 
     'photos' => [
@@ -40,5 +28,6 @@ return [
 
     'login' => ['maxFailures' => 5, 'windowSeconds' => 900],
 
-    'messages' => require __DIR__ . '/messages.php',
+    // 'messages' and 'menu'
+    ...require __DIR__ . '/translations-menu.php',
 ];

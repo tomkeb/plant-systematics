@@ -11,7 +11,7 @@ use App\Core\TemplateRenderer;
 use App\Service\CrudService;
 
 /**
- * List / create / edit / delete for every entity defined in config/entities.php.
+ * List / create / edit / delete for every entity defined in config/admin-crud.php.
  */
 class CrudController
 {

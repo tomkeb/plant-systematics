@@ -41,8 +41,9 @@ final class PhotoAdminController extends CrudController
             return $this->renderUpload(['Choose at least one file.']);
         }
 
-        $categoryId = $request->post('categoryId') === '' ? null : (int) $request->post('categoryId');
+        $categoryIds = array_map('intval', $request->postList('categoryIds'));
         $visible = $request->postFlag('visible');
+        $author = $request->post('author');
         $stored = 0;
         $errors = [];
         foreach ($files as $file) {
@@ -58,10 +59,11 @@ final class PhotoAdminController extends CrudController
                 'nameEn' => '',
                 'desc' => '',
                 'descEn' => '',
-                'categoryId' => $categoryId,
+                'author' => $author,
+                'categoryIds' => $categoryIds,
                 'date' => date('Y-m-d'),
                 'visible' => $visible,
-            ]);
+            ] + $this->crud->autoValues('photos', true));
             $stored++;
         }
 
@@ -92,7 +94,7 @@ final class PhotoAdminController extends CrudController
      */
     private function renderUpload(array $errors, int $status = 200): Response
     {
-        $categories = [['id' => '', 'name' => '—']];
+        $categories = [];
         foreach ($this->categories->all(['name' => 'asc']) as $category) {
             $categories[] = ['id' => (string) $category['_id'], 'name' => $category['name']];
         }
