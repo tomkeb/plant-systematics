@@ -8,16 +8,14 @@
 			| {if $category['active']}<strong>{$category['name']}</strong>{else}<a href="{$category['url']}">{$category['name']}</a>{/if}
 		{/foreach}
 	</p>
-	{foreach $photos as $photo}
-		<figure>
-			<a href="{$uploadsUrl}/orig/{$photo['filename']}"><img src="{$uploadsUrl}/thumb/{$photo['filename']}" alt="{$photo['name']}"></a>
-			<figcaption>
-				{$photo['name']}
-				{if $photo['desc'] !== ''}<div>{$photo['desc']|markdown}</div>{/if}
-			</figcaption>
-		</figure>
+	{foreach $groups as $group}
+		<h2>{$group['title']}</h2>
+		<plant-gallery>
+			{foreach $group['photos'] as $photo}
+				<a href="{$uploadsUrl}/medium/{$photo['filename']}" title="{$photo['name']}"><img src="{$uploadsUrl}/thumb/{$photo['filename']}" alt="{$photo['name']}" loading="lazy"></a>
+			{/foreach}
+		</plant-gallery>
 	{else}
 		<p>{$t['noItems']}</p>
 	{/foreach}
-	{include 'pager.latte', pager: $pager, t: $t}
 {/block}

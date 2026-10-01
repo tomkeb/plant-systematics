@@ -103,7 +103,7 @@ class CrudController
      * @param array<string, mixed>|null $values
      * @param list<string> $errors
      */
-    private function form(string $entity, ?int $id, ?array $values, array $errors): Response
+    protected function form(string $entity, ?int $id, ?array $values, array $errors): Response
     {
         return $this->view->render('admin/form.latte', [
             'entity' => $entity,

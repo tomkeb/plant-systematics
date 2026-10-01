@@ -43,6 +43,41 @@ final class PhotoService
      */
     public function store(array $file): string
     {
+        $this->validate($file);
+        $filename = $this->uniqueFilename($file['name']);
+        $this->process($file, $filename);
+        return $filename;
+    }
+
+    /**
+     * Swaps the image of an already stored photo; the filename (and so every URL) stays the same.
+     * The old files are only overwritten once every size has been produced.
+     *
+     * @param array{name: string, tmp_name: string, error: int, size: int} $file one entry from Request::files()
+     * @throws \RuntimeException with a user-presentable message when the upload is rejected
+     */
+    public function replace(string $filename, array $file): void
+    {
+        $this->validate($file);
+        $this->process($file, basename($filename));
+    }
+
+    public function delete(string $filename): void
+    {
+        foreach (array_keys($this->config->get('photos.sizes')) as $dir) {
+            $path = $this->directory($dir) . '/' . basename($filename);
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
+
+    /**
+     * @param array{name: string, tmp_name: string, error: int, size: int} $file
+     * @throws \RuntimeException
+     */
+    private function validate(array $file): void
+    {
         if ($file['error'] !== UPLOAD_ERR_OK) {
             throw new \RuntimeException("Upload failed ({$file['name']}), error code {$file['error']}.");
         }
@@ -53,32 +88,45 @@ final class PhotoService
         if (!in_array($mime, $this->config->get('photos.allowedMime'), true)) {
             throw new \RuntimeException("Unsupported file type: {$file['name']}.");
         }
-
-        try {
-            $filename = $this->uniqueFilename($file['name']);
-            $quality = $this->config->get('photos.jpegQuality');
-            foreach ($this->config->get('photos.sizes') as $dir => $maxSize) {
-                $image = $this->images->read($file['tmp_name'])->orient()->scaleDown($maxSize, $maxSize);
-                $target = $this->directory($dir);
-                $image->toJpeg($quality)->save($target . '/' . $filename);
-            }
-        } catch (Throwable $e) {
-            if (isset($filename)) {
-                $this->delete($filename);
-            }
-            throw new \RuntimeException("Could not process image: {$file['name']}.", 0, $e);
+        $dimensions = getimagesize($file['tmp_name']);
+        if ($dimensions === false || $dimensions[0] * $dimensions[1] > $this->config->get('photos.maxPixels')) {
+            throw new \RuntimeException("Image resolution too large: {$file['name']}.");
         }
-
-        return $filename;
     }
 
-    public function delete(string $filename): void
+    /**
+     * Writes every size next to its final place under a temporary name, then renames them all.
+     *
+     * @param array{name: string, tmp_name: string, error: int, size: int} $file
+     * @throws \RuntimeException
+     */
+    private function process(array $file, string $filename): void
     {
-        foreach (array_keys($this->config->get('photos.sizes')) as $dir) {
-            $path = $this->directory($dir) . '/' . basename($filename);
-            if (is_file($path)) {
-                unlink($path);
+        // Decoding needs about 4 bytes per pixel, several times over; the default 128 MB is not enough for big photos.
+        ini_set('memory_limit', $this->config->get('photos.memoryLimit'));
+
+        $temporary = [];
+        try {
+            $quality = $this->config->get('photos.jpegQuality');
+            $sizes = $this->config->get('photos.sizes');
+            arsort($sizes); // decode once, then shrink step by step from the largest size
+            $image = $this->images->read($file['tmp_name'])->orient();
+            foreach ($sizes as $dir => $maxSize) {
+                $image->scaleDown($maxSize, $maxSize);
+                $final = $this->directory($dir) . '/' . $filename;
+                $image->toJpeg($quality)->save($final . '.tmp');
+                $temporary[$final . '.tmp'] = $final;
             }
+            foreach ($temporary as $from => $to) {
+                rename($from, $to);
+            }
+        } catch (Throwable $e) {
+            foreach (array_keys($temporary) as $from) {
+                if (is_file($from)) {
+                    unlink($from);
+                }
+            }
+            throw new \RuntimeException("Could not process image: {$file['name']}.", 0, $e);
         }
     }
 

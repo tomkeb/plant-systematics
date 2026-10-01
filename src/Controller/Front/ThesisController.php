@@ -9,40 +9,52 @@ use App\Core\Response;
 use App\Core\TemplateRenderer;
 use App\Repository\ThesisRepository;
 use App\Repository\UserRepository;
+use App\Service\AdminLinks;
 use App\Service\LocaleService;
 
 final class ThesisController extends BaseFrontController
 {
-    private const Categories = ['bachelor', 'master', 'both'];
-
     public function __construct(
         TemplateRenderer $view,
         private readonly ThesisRepository $theses,
         private readonly UserRepository $users,
         private readonly LocaleService $locale,
+        private readonly AdminLinks $adminLinks,
     ) {
         parent::__construct($view);
     }
 
+    /**
+     * Theses grouped by supervisor (groups ordered by surname, theses by name); theses without a
+     * (still existing) supervisor come last.
+     */
     public function index(Request $request): Response
     {
         $messages = $this->locale->messages();
-        $supervisors = [];
-        foreach ($this->users->all() as $user) {
-            $supervisors[$user['_id']] = trim($user['name'] . ' ' . $user['surname']);
+        // Rows saved before the flag existed have no "visible" key and count as visible.
+        $rows = array_filter($this->theses->all(['name' => 'asc']), fn (array $row): bool => $row['visible'] ?? true);
+
+        $bySupervisor = [];
+        foreach ($this->locale->localizeAll(array_values($rows), ['name', 'desc']) as $item) {
+            $item['categoryName'] = $messages[$item['category']] ?? '';
+            $bySupervisor[$item['supervisor'] ?? 0][] = $item;
         }
+
         $groups = [];
-        foreach (self::Categories as $category) {
-            $rows = $this->theses->findBy(['category', '=', $category], ['name' => 'asc']);
-            // Rows saved before the flag existed have no "visible" key and count as visible.
-            $rows = array_filter($rows, fn (array $row): bool => $row['visible'] ?? true);
-            $items = $this->locale->localizeAll(array_values($rows), ['name', 'desc']);
-            foreach ($items as &$item) {
-                $item['supervisorName'] = $supervisors[$item['supervisor'] ?? null] ?? '';
+        foreach ($this->users->all(['surname' => 'asc', 'name' => 'asc']) as $user) {
+            if (isset($bySupervisor[$user['_id']])) {
+                $groups[] = ['title' => trim($user['name'] . ' ' . $user['surname']), 'items' => $bySupervisor[$user['_id']]];
+                unset($bySupervisor[$user['_id']]);
             }
-            unset($item);
-            $groups[] = ['title' => $messages[$category], 'items' => $items];
         }
-        return $this->view->render('front/theses.latte', ['groups' => $groups]);
+        if ($bySupervisor !== []) {
+            $groups[] = ['title' => $messages['noSupervisor'], 'items' => array_merge(...array_values($bySupervisor))];
+        }
+
+        return $this->view->render('front/theses.latte', [
+            'groups' => $groups,
+            'editUrl' => $this->adminLinks->list('theses'),
+            'editLabel' => 'Manage theses',
+        ]);
     }
 }

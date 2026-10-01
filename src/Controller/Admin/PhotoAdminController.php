@@ -77,6 +77,31 @@ final class PhotoAdminController extends CrudController
         return Response::redirect('/admin/photos');
     }
 
+    public function updatePhoto(Request $request, int $id): Response
+    {
+        $photo = $this->photos->find($id);
+        if ($photo === null) {
+            return $this->notFound();
+        }
+        [$data, $errors] = $this->crud->collect('photos', $request, $photo);
+
+        $files = array_values(array_filter($request->files('file'), fn(array $f) => $f['error'] !== UPLOAD_ERR_NO_FILE));
+        if ($errors === [] && $files !== []) {
+            try {
+                $this->photoService->replace($photo['filename'], $files[0]);
+            } catch (\RuntimeException $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+        if ($errors !== []) {
+            return $this->form('photos', $id, $data, $errors);
+        }
+
+        $this->crud->save('photos', $data, $id);
+        $this->flash->add($files === [] ? 'Saved.' : 'Saved, photo replaced (reload the page if the old image still shows).');
+        return Response::redirect('/admin/photos');
+    }
+
     public function deletePhoto(Request $request, int $id): Response
     {
         $photo = $this->photos->find($id);

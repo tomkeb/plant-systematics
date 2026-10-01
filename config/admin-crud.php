@@ -11,10 +11,12 @@ use App\Repository\UserRepository;
 
 // Admin CRUD definitions, one per entity: what is listed ("columns") and every stored field ("fields").
 // Every row also has an "_id" assigned by SleekDB. A field has a "name" and a "type":
-//   string, text (multi-line plain text), markdown, email, int (whole number; "min", "max" optional), date (Y-m-d), bool, password (virtual, handled by CrudService),
+//   string, text (multi-line plain text), markdown, email, int (whole number; "min", "max" optional), date (Y-m-d), bool, password and file (virtual: not stored, handled by CrudService / the controller),
 //   enum ("options": value => label),
 //   ref / refs ("ref": [repository class, label field or list of fields]; stored as the int _id of the
 //   referenced row, or as a list of them).
+// A column is [field, header] with an optional third item: "image" (the field holds a photo filename, shown as a
+// thumbnail) or ["orig" => "filename"] (the cell links to the full-size photo named in that field).
 // Other keys: "label" (a field without one gets no form input, e.g. values set by the upload or computed);
 // "required"; "default" (bool); "auto" ("creator": set to the logged-in user's id on create, "editor": set on every
 // create and edit).
@@ -85,7 +87,7 @@ return [
         'repository' => PhotoRepository::class,
         'orderBy' => ['date' => 'desc'],
         'canCreate' => false, // photos are created through the upload form
-        'columns' => [['_id', 'ID'], ['filename', 'Photo', 'image'], ['name', 'Name'], ['author', 'Author'], ['categoryIds', 'Categories'], ['date', 'Date'], ['visible', 'Visible']],
+        'columns' => [['_id', 'ID'], ['filename', 'Photo', 'image'], ['name', 'Name', ['orig' => 'filename']], ['author', 'Author'], ['categoryIds', 'Categories'], ['date', 'Date'], ['visible', 'Visible']],
         'fields' => [
             ['name' => 'filename', 'type' => 'string', 'required' => true], // set by the upload: lowercase, no diacritics, same in every size directory
             ['name' => 'name', 'label' => 'Name', 'type' => 'string'],
@@ -96,6 +98,7 @@ return [
             ['name' => 'categoryIds', 'label' => 'Categories', 'type' => 'refs', 'ref' => [PhotoCategoryRepository::class, 'name']],
             ['name' => 'date', 'label' => 'Date', 'type' => 'date', 'required' => true],
             ['name' => 'visible', 'label' => 'Visible in gallery', 'type' => 'bool'],
+            ['name' => 'file', 'label' => 'Replace the photo (optional)', 'type' => 'file'], // virtual: re-upload, see PhotoAdminController
             ['name' => 'lastEditBy', 'type' => 'ref', 'ref' => [UserRepository::class, ['surname', 'name']], 'auto' => 'editor'],
         ],
     ],

@@ -46,6 +46,11 @@ final class AuthController
     public function logout(Request $request): Response
     {
         $this->auth->logout();
+        $redirect = $request->post('redirect');
+        // Only local paths: not "//host" or "/\host", which browsers read as another site.
+        if (preg_match('#^/(?![/\\\\])#', $redirect) === 1) {
+            return Response::redirect($redirect); // back to the public page the admin logged out from
+        }
         $this->flash->add('Logged out.');
         return Response::redirect('/admin/login');
     }

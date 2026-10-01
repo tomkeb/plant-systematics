@@ -9,6 +9,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\TemplateRenderer;
 use App\Repository\NewsRepository;
+use App\Service\AdminLinks;
 use App\Service\LocaleService;
 use App\Service\PaginationService;
 
@@ -20,6 +21,7 @@ final class NewsController extends BaseFrontController
         private readonly LocaleService $locale,
         private readonly PaginationService $pagination,
         private readonly Config $config,
+        private readonly AdminLinks $adminLinks,
     ) {
         parent::__construct($view);
     }
@@ -38,6 +40,8 @@ final class NewsController extends BaseFrontController
         return $this->view->render('front/news-list.latte', [
             'items' => $this->locale->localizeAll($items, ['name', 'text']),
             'pager' => $pager,
+            'editUrl' => $this->adminLinks->list('news'),
+            'editLabel' => 'Manage news',
         ]);
     }
 
@@ -50,6 +54,7 @@ final class NewsController extends BaseFrontController
         return $this->view->render('front/news-detail.latte', [
             'item' => $this->locale->localize($item, ['name', 'text']),
             'listUrl' => $this->locale->url('/news'),
+            'editUrl' => $this->adminLinks->edit('news', $id),
         ]);
     }
 }

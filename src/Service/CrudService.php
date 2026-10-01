@@ -50,7 +50,7 @@ final class CrudService
     }
 
     /**
-     * @return list<array{id: int, cells: list<array{value: string, image: bool}>}>
+     * @return list<array{id: int, cells: list<array{value: string, image: bool, origFile: string|null}>}>
      */
     public function listRows(string $entity): array
     {
@@ -71,6 +71,7 @@ final class CrudService
                         default => (string) $value,
                     },
                     'image' => $kind === 'image',
+                    'origFile' => is_array($kind) ? ($row[$kind['orig']] ?? null) : null,
                 ];
             }
             $rows[] = ['id' => $row['_id'], 'cells' => $cells];
@@ -121,6 +122,8 @@ final class CrudService
             switch ($field['type']) {
                 case 'password':
                     continue 2; // handled in collectUser()
+                case 'file':
+                    continue 2; // an upload, handled by the controller
                 case 'checkbox':
                     $data[$name] = $request->postFlag($name);
                     continue 2;
@@ -241,7 +244,7 @@ final class CrudService
 
     /**
      * The entity's form fields: the entries of its definition that have a label, with "type" turned into
-     * the widget (text, email, number, textarea, markdown, date, select, checkbox, checkboxes, password).
+     * the widget (text, email, number, textarea, markdown, date, select, checkbox, checkboxes, password, file).
      *
      * @return list<array<string, mixed>>
      */

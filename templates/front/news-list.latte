@@ -5,6 +5,7 @@
 	{foreach $items as $item}
 		<article>
 			<h2><a href="/{$lang}/news/{$item['_id']}">{$item['name']}</a></h2>
+			<p n:if="$isAdmin"><small><a href="{adminEditUrl('news', $item['_id'])}">Edit</a></small></p>
 			<p><small>{$item['date']}</small></p>
 			{$item['text']|markdown}
 		</article>

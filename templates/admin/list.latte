@@ -22,6 +22,8 @@
 						<td>
 							{if $cell['image']}
 								<img src="{$uploadsUrl}/thumb/{$cell['value']}" alt="" width="80">
+							{elseif $cell['origFile']}
+								<a href="{$uploadsUrl}/orig/{$cell['origFile']}" target="_blank">{$cell['value'] ?: $cell['origFile']}</a>
 							{else}
 								{$cell['value']}
 							{/if}

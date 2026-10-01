@@ -21,6 +21,7 @@ return [
     ['GET', '/admin', [DashboardController::class, 'index']],
     ['GET', '/admin/photos/upload', [PhotoAdminController::class, 'uploadForm']],
     ['POST', '/admin/photos/upload', [PhotoAdminController::class, 'upload']],
+    ['POST', '/admin/photos/{id}/edit', [PhotoAdminController::class, 'updatePhoto']],
     ['POST', '/admin/photos/{id}/delete', [PhotoAdminController::class, 'deletePhoto']],
     ['GET', '/admin/{entity}', [CrudController::class, 'list']],
     ['GET', '/admin/{entity}/new', [CrudController::class, 'createForm']],

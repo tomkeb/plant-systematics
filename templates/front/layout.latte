@@ -11,6 +11,17 @@
 	<link rel="alternate" hreflang="{$otherLang}" href="{$otherLangUrl}">
 </head>
 <body>
+	<aside n:if="$isAdmin">
+		<small>Logged in as {$currentUser['email']}
+		| <a href="/admin">Admin</a>
+		{if $editUrl}| <a href="{$editUrl}">{$editLabel}</a>{/if}
+		</small>
+		<form method="post" action="/admin/logout">
+			<input type="hidden" name="{$csrfField}" value="{$csrfToken}">
+			<input type="hidden" name="redirect" value="{$currentUrl}">
+			<button type="submit">Log out</button>
+		</form>
+	</aside>
 	<header>
 		<p><a href="{$homeUrl}"><strong>{$t['siteName']}</strong></a></p>
 		<nav>

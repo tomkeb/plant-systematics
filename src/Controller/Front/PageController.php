@@ -8,6 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\TemplateRenderer;
 use App\Repository\PageRepository;
+use App\Service\AdminLinks;
 use App\Service\LocaleService;
 
 /**
@@ -19,6 +20,7 @@ final class PageController extends BaseFrontController
         TemplateRenderer $view,
         private readonly PageRepository $pages,
         private readonly LocaleService $locale,
+        private readonly AdminLinks $adminLinks,
     ) {
         parent::__construct($view);
     }
@@ -61,6 +63,7 @@ final class PageController extends BaseFrontController
         }
         return $this->view->render('front/static-page.latte', [
             'page' => $this->locale->localize($page, ['name', 'text']),
+            'editUrl' => $this->adminLinks->edit('pages', $page['_id']),
         ]);
     }
 }

@@ -6,10 +6,11 @@
 		<h2>{$group['title']}</h2>
 		{foreach $group['items'] as $item}
 			<h3>{$item['name']}</h3>
-			<p n:if="$item['supervisorName']">{$t['supervisor']}: {$item['supervisorName']}</p>
+			<p><small>{$item['categoryName']}</small></p>
+			<p n:if="$isAdmin"><small><a href="{adminEditUrl('theses', $item['_id'])}">Edit</a></small></p>
 			{$item['desc']|markdown}
-		{else}
-			<p>{$t['noItems']}</p>
 		{/foreach}
+	{else}
+		<p>{$t['noItems']}</p>
 	{/foreach}
 {/block}
