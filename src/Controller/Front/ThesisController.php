@@ -13,7 +13,7 @@ use App\Service\LocaleService;
 
 final class ThesisController extends BaseFrontController
 {
-    private const Categories = ['bc', 'mgr', 'both'];
+    private const Categories = ['bachelor', 'master', 'both'];
 
     public function __construct(
         TemplateRenderer $view,

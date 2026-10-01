@@ -147,6 +147,9 @@ final class CrudService
             if ($field['type'] === 'select' && $value !== '' && !array_key_exists($value, $this->options($field))) {
                 $errors[] = "{$label} has an invalid value.";
             }
+            if ($field['type'] === 'number') {
+                $value = $this->wholeNumber($label, $value, $field, $errors);
+            }
             if (($field['cast'] ?? null) === 'int') {
                 $value = $value === '' ? null : (int) $value;
             }
@@ -238,7 +241,7 @@ final class CrudService
 
     /**
      * The entity's form fields: the entries of its definition that have a label, with "type" turned into
-     * the widget (text, email, textarea, markdown, date, select, checkbox, checkboxes, password).
+     * the widget (text, email, number, textarea, markdown, date, select, checkbox, checkboxes, password).
      *
      * @return list<array<string, mixed>>
      */
@@ -259,12 +262,18 @@ final class CrudService
                     'enum', 'ref' => 'select',
                     'refs' => 'checkboxes',
                     'string' => 'text',
+                    'int' => 'number',
                     default => $def['type'], // html, email, date
                 },
                 'required' => $def['required'] ?? false,
             ];
             if (isset($def['default'])) {
                 $field['default'] = $def['default'];
+            }
+            foreach (['min', 'max', 'step'] as $attribute) {
+                if (isset($def[$attribute])) {
+                    $field[$attribute] = $def[$attribute];
+                }
             }
             if ($def['type'] === 'enum') {
                 $field['options'] = $def['options'];
@@ -299,6 +308,30 @@ final class CrudService
             return $options;
         }
         return [];
+    }
+
+    /**
+     * Parses a whole number and checks it against the field's optional min and max.
+     *
+     * @param array<string, mixed> $field
+     * @param list<string> $errors
+     * @return int|null null when empty or invalid
+     */
+    private function wholeNumber(string $label, string $value, array $field, array &$errors): ?int
+    {
+        if ($value === '') {
+            return null;
+        }
+        if (preg_match('/^-?\d+$/', $value) !== 1) {
+            $errors[] = "{$label} must be a whole number.";
+            return null;
+        }
+        $number = (int) $value;
+        if ((isset($field['min']) && $number < $field['min']) || (isset($field['max']) && $number > $field['max'])) {
+            $errors[] = "{$label} must be between {$field['min']} and {$field['max']}.";
+            return null;
+        }
+        return $number;
     }
 
     private function isDate(string $value): bool

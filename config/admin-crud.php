@@ -11,7 +11,7 @@ use App\Repository\UserRepository;
 
 // Admin CRUD definitions, one per entity: what is listed ("columns") and every stored field ("fields").
 // Every row also has an "_id" assigned by SleekDB. A field has a "name" and a "type":
-//   string, text (multi-line plain text), markdown, email, date (Y-m-d), bool, password (virtual, handled by CrudService),
+//   string, text (multi-line plain text), markdown, email, int (whole number; "min", "max" optional), date (Y-m-d), bool, password (virtual, handled by CrudService),
 //   enum ("options": value => label),
 //   ref / refs ("ref": [repository class, label field or list of fields]; stored as the int _id of the
 //   referenced row, or as a list of them).
@@ -63,9 +63,10 @@ return [
                 'label' => 'Category',
                 'type' => 'enum',
                 'required' => true,
-                'options' => ['bc' => 'Bachelor', 'mgr' => 'Master', 'both' => 'Both'],
+                'options' => ['bachelor' => 'Bachelor', 'master' => 'Master', 'both' => 'Both'],
             ],
             ['name' => 'supervisor', 'label' => 'Supervisor', 'type' => 'ref', 'ref' => [UserRepository::class, ['surname', 'name']]],
+            ['name' => 'fieldTripPercentage', 'label' => 'Field trip share (0-100)', 'type' => 'int', 'min' => 0, 'max' => 100],
             ['name' => 'visible', 'label' => 'Visible (untick to archive)', 'type' => 'bool', 'default' => true],
         ],
     ],

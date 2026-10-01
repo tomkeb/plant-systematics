@@ -37,7 +37,7 @@
 							</select>
 						</label>
 					{default}
-						<label>{$field['label']}<br><input type="{$field['type']}" name="{$field['name']}" value="{$field['value']}" n:attr="required => $field['required']"></label>
+						<label>{$field['label']}<br><input type="{$field['type']}" name="{$field['name']}" value="{$field['value']}" n:attr="required => $field['required'], min => $field['min'] ?? null, max => $field['max'] ?? null, step => $field['step'] ?? null"></label>
 				{/switch}
 			</p>
 		{/foreach}
