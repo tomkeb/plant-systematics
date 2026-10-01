@@ -23,6 +23,7 @@ return [
         ['route' => '/news', 'label' => ['cs' => 'Aktuality', 'en' => 'News']],
         ['route' => '/people', 'label' => ['cs' => 'Lidé', 'en' => 'People']],
         ['route' => '/research', 'label' => ['cs' => 'Výzkum', 'en' => 'Research']],
+        ['route' => '/laboratory', 'label' => ['cs' => 'Laboratoř', 'en' => 'Laboratory']],
         ['route' => '/courses', 'label' => ['cs' => 'Výuka', 'en' => 'Courses']],
         ['route' => '/theses', 'label' => ['cs' => 'Závěrečné práce', 'en' => 'Theses']],
         ['route' => '/gallery', 'label' => ['cs' => 'Galerie', 'en' => 'Gallery']],

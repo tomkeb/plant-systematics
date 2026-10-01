@@ -34,6 +34,7 @@ return [
     ['GET', '/people', [PageController::class, 'people']],
     ['GET', '/research', [PageController::class, 'research']],
     ['GET', '/courses', [PageController::class, 'courses']],
+    ['GET', '/laboratory', [PageController::class, 'laboratory']],
     ['GET', '/page/{slug}', [PageController::class, 'page']],
     ['GET', '/news', [NewsController::class, 'index']],
     ['GET', '/news/{id}', [NewsController::class, 'detail']],

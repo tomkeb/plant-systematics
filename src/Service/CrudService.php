@@ -89,7 +89,7 @@ final class CrudService
             if ($field['type'] === 'author') {
                 continue;
             }
-            $default = $field['type'] === 'date' ? date('Y-m-d') : ($field['type'] === 'checkbox' ? false : '');
+            $default = $field['type'] === 'date' ? date('Y-m-d') : ($field['type'] === 'checkbox' ? ($field['default'] ?? false) : '');
             $field['value'] = $field['type'] === 'password' ? '' : ($values[$field['name']] ?? $default);
             if ($field['type'] === 'select') {
                 $field['value'] = (string) $field['value'];
@@ -221,9 +221,10 @@ final class CrudService
         }
         if (isset($field['optionsFrom'])) {
             [$repositoryClass, $labelField] = $field['optionsFrom'];
+            $labelFields = (array) $labelField; // several fields are joined with a space
             $options = ['' => '—'];
-            foreach ($this->container->get($repositoryClass)->all([$labelField => 'asc']) as $row) {
-                $options[(string) $row['_id']] = (string) $row[$labelField];
+            foreach ($this->container->get($repositoryClass)->all([$labelFields[0] => 'asc']) as $row) {
+                $options[(string) $row['_id']] = implode(' ', array_map(fn (string $f): string => (string) ($row[$f] ?? ''), $labelFields));
             }
             return $options;
         }

@@ -11,7 +11,7 @@ use App\Repository\UserRepository;
 
 // Admin CRUD definitions. Field types: text, email, textarea, html, date, select, checkbox, password, author.
 // "author" is never shown; it is set to the logged-in user on create. "select" takes "options"
-// (value => label) or "optionsFrom" ([repository class, label field]).
+// (value => label) or "optionsFrom" ([repository class, label field or list of fields]). "checkbox" takes an optional "default".
 return [
     'pages' => [
         'title' => 'Static pages',
@@ -46,7 +46,7 @@ return [
         'title' => 'Theses',
         'repository' => ThesisRepository::class,
         'orderBy' => ['name' => 'asc'],
-        'columns' => [['name', 'Name'], ['category', 'Category']],
+        'columns' => [['name', 'Name'], ['category', 'Category'], ['supervisor', 'Supervisor'], ['visible', 'Visible']],
         'fields' => [
             ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'required' => true],
             ['name' => 'nameEn', 'label' => 'Name (English)', 'type' => 'text'],
@@ -59,6 +59,14 @@ return [
                 'required' => true,
                 'options' => ['bc' => 'Bachelor', 'mgr' => 'Master', 'both' => 'Both'],
             ],
+            [
+                'name' => 'supervisor',
+                'label' => 'Supervisor',
+                'type' => 'select',
+                'cast' => 'int',
+                'optionsFrom' => [UserRepository::class, ['surname', 'name']],
+            ],
+            ['name' => 'visible', 'label' => 'Visible (untick to archive)', 'type' => 'checkbox', 'default' => true],
         ],
     ],
     'photo-categories' => [

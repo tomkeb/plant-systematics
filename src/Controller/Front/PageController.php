@@ -11,7 +11,7 @@ use App\Repository\PageRepository;
 use App\Service\LocaleService;
 
 /**
- * Static pages stored in the "pages" table (home, people, research, courses and any /page/{slug}).
+ * Static pages stored in the "pages" table (home, people, research, courses, laboratory and any /page/{slug}).
  */
 final class PageController extends BaseFrontController
 {
@@ -23,24 +23,29 @@ final class PageController extends BaseFrontController
         parent::__construct($view);
     }
 
-    public function home(Request $request): Response
+    public function home(): Response
     {
         return $this->show('home');
     }
 
-    public function people(Request $request): Response
+    public function people(): Response
     {
         return $this->show('people');
     }
 
-    public function research(Request $request): Response
+    public function research(): Response
     {
         return $this->show('research');
     }
 
-    public function courses(Request $request): Response
+    public function courses(): Response
     {
         return $this->show('courses');
+    }
+
+    public function laboratory(): Response
+    {
+        return $this->show('laboratory');
     }
 
     public function page(Request $request, string $slug): Response
