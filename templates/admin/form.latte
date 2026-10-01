@@ -1,0 +1,45 @@
+{layout 'layout.latte'}
+
+{block title}{$title} – Admin{/block}
+
+{block head}
+	<link rel="stylesheet" href="/assets/vendor/quill/dist/quill.snow.css">
+{/block}
+
+{block content}
+	<h1>{$title}: {if $id}edit #{$id}{else}new{/if}</h1>
+	{foreach $errors as $error}<p><strong>{$error}</strong></p>{/foreach}
+
+	<form method="post" action="/admin/{$entity}/{if $id}{$id}/edit{else}new{/if}">
+		<input type="hidden" name="{$csrfField}" value="{$csrfToken}">
+		{foreach $fields as $field}
+			<p>
+				{switch $field['type']}
+					{case 'checkbox'}
+						<label><input type="checkbox" name="{$field['name']}" value="1" n:attr="checked => $field['value']"> {$field['label']}</label>
+					{case 'html', 'textarea'}
+						<label>{$field['label']}<br><textarea name="{$field['name']}" n:attr="data-editor => $field['type'] === 'html' ? 'html'" rows="{$field['type'] === 'html' ? 12 : 4}" cols="80">{$field['value']}</textarea></label>
+					{case 'select'}
+						<label>{$field['label']}<br>
+							<select name="{$field['name']}">
+								{foreach $field['options'] as $value => $label}
+									<option value="{$value}" n:attr="selected => (string) $value === $field['value']">{$label}</option>
+								{/foreach}
+							</select>
+						</label>
+					{default}
+						<label>{$field['label']}<br><input type="{$field['type']}" name="{$field['name']}" value="{$field['value']}" n:attr="required => $field['required']"></label>
+				{/switch}
+			</p>
+		{/foreach}
+		<p>
+			<button type="submit">Save</button>
+			<a href="/admin/{$entity}">Cancel</a>
+		</p>
+	</form>
+{/block}
+
+{block scripts}
+	<script src="/assets/vendor/quill/dist/quill.js"></script>
+	<script src="/assets/editor.js"></script>
+{/block}

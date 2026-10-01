@@ -1,0 +1,14 @@
+{layout 'layout.latte'}
+
+{block content}
+	<h1>{$t['thesesTitle']}</h1>
+	{foreach $groups as $group}
+		<h2>{$group['title']}</h2>
+		{foreach $group['items'] as $item}
+			<h3>{$item['name']}</h3>
+			{$item['desc']|noescape}
+		{else}
+			<p>{$t['noItems']}</p>
+		{/foreach}
+	{/foreach}
+{/block}

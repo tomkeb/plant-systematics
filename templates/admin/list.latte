@@ -1,0 +1,43 @@
+{layout 'layout.latte'}
+
+{block title}{$title} – Admin{/block}
+
+{block content}
+	<h1>{$title}</h1>
+	<p>
+		{if $canCreate}<a href="/admin/{$entity}/new">+ Add</a>{/if}
+		{if $entity === 'photos'}<a href="/admin/photos/upload">+ Upload photos</a>{/if}
+	</p>
+	<table border="1" cellpadding="4">
+		<thead>
+			<tr>
+				{foreach $headers as $header}<th>{$header}</th>{/foreach}
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach $rows as $row}
+				<tr>
+					{foreach $row['cells'] as $cell}
+						<td>
+							{if $cell['image']}
+								<img src="{$uploadsUrl}/thumb/{$cell['value']}" alt="" width="80">
+							{else}
+								{$cell['value']}
+							{/if}
+						</td>
+					{/foreach}
+					<td>
+						<a href="/admin/{$entity}/{$row['id']}/edit">Edit</a>
+						<form method="post" action="/admin/{$entity}/{$row['id']}/delete" onsubmit="return confirm('Delete?')">
+							<input type="hidden" name="{$csrfField}" value="{$csrfToken}">
+							<button type="submit">Delete</button>
+						</form>
+					</td>
+				</tr>
+			{else}
+				<tr><td colspan="{count($headers) + 1}">Nothing here yet.</td></tr>
+			{/foreach}
+		</tbody>
+	</table>
+{/block}

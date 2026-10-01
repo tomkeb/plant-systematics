@@ -1,0 +1,12 @@
+{layout 'layout.latte'}
+
+{block title}{$item['name']} – {$t['siteName']}{/block}
+
+{block content}
+	<article>
+		<h1>{$item['name']}</h1>
+		<p><small>{$item['date']}</small></p>
+		{$item['text']|noescape}
+	</article>
+	<p><a href="{$listUrl}">&laquo; {$t['back']}</a></p>
+{/block}

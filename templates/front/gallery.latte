@@ -1,0 +1,23 @@
+{layout 'layout.latte'}
+
+{block content}
+	<h1>{$t['galleryTitle']}</h1>
+	<p>
+		{if $allActive}<strong>{$t['allCategories']}</strong>{else}<a href="{$allUrl}">{$t['allCategories']}</a>{/if}
+		{foreach $categories as $category}
+			| {if $category['active']}<strong>{$category['name']}</strong>{else}<a href="{$category['url']}">{$category['name']}</a>{/if}
+		{/foreach}
+	</p>
+	{foreach $photos as $photo}
+		<figure>
+			<a href="{$uploadsUrl}/orig/{$photo['filename']}"><img src="{$uploadsUrl}/thumb/{$photo['filename']}" alt="{$photo['name']}"></a>
+			<figcaption>
+				{$photo['name']}
+				{if $photo['desc'] !== ''}<br><small>{$photo['desc']}</small>{/if}
+			</figcaption>
+		</figure>
+	{else}
+		<p>{$t['noItems']}</p>
+	{/foreach}
+	{include 'pager.latte', pager: $pager, t: $t}
+{/block}

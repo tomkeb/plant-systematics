@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="{$lang}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{block title}{$t['siteName']}{/block}</title>
+	<link rel="stylesheet" href="/assets/reset.css">
+	<link rel="stylesheet" href="/assets/contextual.css">
+	<link rel="alternate" hreflang="{$otherLang}" href="{$otherLangUrl}">
+</head>
+<body>
+	<header>
+		<p><a href="{$homeUrl}"><strong>{$t['siteName']}</strong></a></p>
+		<nav>
+			<ul>
+				{foreach $menu as $item}
+					<li>
+						{if $item['active']}
+							<strong><a href="{$item['url']}">{$item['label']}</a></strong>
+						{else}
+							<a href="{$item['url']}">{$item['label']}</a>
+						{/if}
+					</li>
+				{/foreach}
+				<li><a href="{$otherLangUrl}" hreflang="{$otherLang}">{$t['otherLanguage']}</a></li>
+			</ul>
+		</nav>
+	</header>
+	<hr>
+	<main>
+		{block content}{/block}
+	</main>
+</body>
+</html>

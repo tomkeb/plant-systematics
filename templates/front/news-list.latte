@@ -1,0 +1,15 @@
+{layout 'layout.latte'}
+
+{block content}
+	<h1>{$t['newsTitle']}</h1>
+	{foreach $items as $item}
+		<article>
+			<h2><a href="/{$lang}/news/{$item['_id']}">{$item['name']}</a></h2>
+			<p><small>{$item['date']}</small></p>
+			{$item['text']|noescape}
+		</article>
+	{else}
+		<p>{$t['noItems']}</p>
+	{/foreach}
+	{include 'pager.latte', pager: $pager, t: $t}
+{/block}

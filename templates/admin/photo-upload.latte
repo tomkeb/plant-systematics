@@ -1,0 +1,25 @@
+{layout 'layout.latte'}
+
+{block content}
+	<h1>Upload photos</h1>
+	{foreach $errors as $error}<p><strong>{$error}</strong></p>{/foreach}
+
+	<form method="post" action="/admin/photos/upload" enctype="multipart/form-data">
+		<input type="hidden" name="{$csrfField}" value="{$csrfToken}">
+		<p><label>Files (JPEG, PNG, WebP, GIF)<br><input type="file" name="photos[]" accept="image/*" multiple required></label></p>
+		<p>
+			<label>Category<br>
+				<select name="categoryId">
+					{foreach $categories as $category}
+						<option value="{$category['id']}">{$category['name']}</option>
+					{/foreach}
+				</select>
+			</label>
+		</p>
+		<p><label><input type="checkbox" name="visible" value="1" checked> Visible in gallery</label></p>
+		<p>
+			<button type="submit">Upload</button>
+			<a href="/admin/photos">Cancel</a>
+		</p>
+	</form>
+{/block}

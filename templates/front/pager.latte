@@ -1,0 +1,7 @@
+{if $pager['pages'] > 1}
+	<p>
+		{if $pager['prevUrl']}<a href="{$pager['prevUrl']}">&laquo; {$t['prev']}</a>{/if}
+		{$pager['page']} / {$pager['pages']}
+		{if $pager['nextUrl']}<a href="{$pager['nextUrl']}">{$t['next']} &raquo;</a>{/if}
+	</p>
+{/if}

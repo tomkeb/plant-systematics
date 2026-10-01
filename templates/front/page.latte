@@ -1,0 +1,8 @@
+{layout 'layout.latte'}
+
+{block title}{$page['name']} – {$t['siteName']}{/block}
+
+{block content}
+	<h1>{$page['name']}</h1>
+	{$page['text']|noescape}
+{/block}
