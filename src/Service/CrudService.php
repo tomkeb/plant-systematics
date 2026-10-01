@@ -22,7 +22,6 @@ final class CrudService
     public function __construct(
         Config $config,
         private readonly Container $container,
-        private readonly HtmlSanitizer $sanitizer,
         private readonly AuthService $auth,
         private readonly UserRepository $users,
     ) {
@@ -135,9 +134,6 @@ final class CrudService
                     }
                     $data[$name] = array_values(array_unique(array_map('intval', $submitted)));
                     continue 2;
-                case 'html':
-                    $value = $this->sanitizer->clean($request->post($name));
-                    break;
                 default:
                     $value = $request->post($name);
             }
@@ -242,7 +238,7 @@ final class CrudService
 
     /**
      * The entity's form fields: the entries of its definition that have a label, with "type" turned into
-     * the widget (text, email, textarea, html, date, select, checkbox, checkboxes, password).
+     * the widget (text, email, textarea, markdown, date, select, checkbox, checkboxes, password).
      *
      * @return list<array<string, mixed>>
      */

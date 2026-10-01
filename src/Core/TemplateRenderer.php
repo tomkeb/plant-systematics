@@ -6,11 +6,14 @@ namespace App\Core;
 
 use App\Service\AuthService;
 use App\Service\LocaleService;
+use App\Service\MarkdownRenderer;
 use App\Service\MenuService;
 use Latte\Engine;
+use Latte\Runtime\Html;
 
 /**
- * Renders Latte templates with the globals every page needs (language, menu, CSRF token, flash messages).
+ * Renders Latte templates with the globals every page needs (language, menu, CSRF token, flash messages)
+ * and a "markdown" filter that turns stored Markdown into (safe) HTML.
  */
 final class TemplateRenderer
 {
@@ -24,6 +27,7 @@ final class TemplateRenderer
         private readonly LocaleService $locale,
         private readonly MenuService $menu,
         private readonly AuthService $auth,
+        MarkdownRenderer $markdown,
     ) {
         $cache = $config->get('paths.var') . '/latte';
         if (!is_dir($cache)) {
@@ -31,6 +35,7 @@ final class TemplateRenderer
         }
         $this->latte = new Engine();
         $this->latte->setTempDirectory($cache);
+        $this->latte->addFilter('markdown', fn(string $text): Html => new Html($markdown->render($text)));
     }
 
     /**

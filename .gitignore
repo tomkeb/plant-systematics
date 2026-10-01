@@ -2,4 +2,5 @@
 /var/
 /data/users/
 /public/uploads/
-/public/assets/vendor/
+/composer.phar
+/node_modules/

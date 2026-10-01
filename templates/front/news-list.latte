@@ -6,7 +6,7 @@
 		<article>
 			<h2><a href="/{$lang}/news/{$item['_id']}">{$item['name']}</a></h2>
 			<p><small>{$item['date']}</small></p>
-			{$item['text']|noescape}
+			{$item['text']|markdown}
 		</article>
 	{else}
 		<p>{$t['noItems']}</p>

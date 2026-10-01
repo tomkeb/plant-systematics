@@ -6,6 +6,8 @@
 	<title>{block title}{$t['siteName']}{/block}</title>
 	<link rel="stylesheet" href="/assets/reset.css">
 	<link rel="stylesheet" href="/assets/contextual.css">
+	<link rel="stylesheet" href="/assets/plant-gallery.bundle.css">
+	<script src="/assets/plant-gallery.bundle.js" defer></script>
 	<link rel="alternate" hreflang="{$otherLang}" href="{$otherLangUrl}">
 </head>
 <body>
@@ -13,12 +15,12 @@
 		<p><a href="{$homeUrl}"><strong>{$t['siteName']}</strong></a></p>
 		<nav>
 			<ul>
-				{foreach $menu as $item}
+				{foreach $menu as $menuItem}
 					<li>
-						{if $item['active']}
-							<strong><a href="{$item['url']}">{$item['label']}</a></strong>
+						{if $menuItem['active']}
+							<strong><a href="{$menuItem['url']}">{$menuItem['label']}</a></strong>
 						{else}
-							<a href="{$item['url']}">{$item['label']}</a>
+							<a href="{$menuItem['url']}">{$menuItem['label']}</a>
 						{/if}
 					</li>
 				{/foreach}

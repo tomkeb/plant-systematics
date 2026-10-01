@@ -13,7 +13,7 @@
 			<a href="{$uploadsUrl}/orig/{$photo['filename']}"><img src="{$uploadsUrl}/thumb/{$photo['filename']}" alt="{$photo['name']}"></a>
 			<figcaption>
 				{$photo['name']}
-				{if $photo['desc'] !== ''}<br><small>{$photo['desc']}</small>{/if}
+				{if $photo['desc'] !== ''}<div>{$photo['desc']|markdown}</div>{/if}
 			</figcaption>
 		</figure>
 	{else}

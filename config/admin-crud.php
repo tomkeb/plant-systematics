@@ -11,7 +11,7 @@ use App\Repository\UserRepository;
 
 // Admin CRUD definitions, one per entity: what is listed ("columns") and every stored field ("fields").
 // Every row also has an "_id" assigned by SleekDB. A field has a "name" and a "type":
-//   string, text (multi-line), html, email, date (Y-m-d), bool, password (virtual, handled by CrudService),
+//   string, text (multi-line plain text), markdown, email, date (Y-m-d), bool, password (virtual, handled by CrudService),
 //   enum ("options": value => label),
 //   ref / refs ("ref": [repository class, label field or list of fields]; stored as the int _id of the
 //   referenced row, or as a list of them).
@@ -28,8 +28,8 @@ return [
             ['name' => 'slug', 'label' => 'Slug (URL id, e.g. home, people, research, courses)', 'type' => 'string', 'required' => true],
             ['name' => 'name', 'label' => 'Name', 'type' => 'string', 'required' => true],
             ['name' => 'nameEn', 'label' => 'Name (English)', 'type' => 'string'],
-            ['name' => 'text', 'label' => 'Text (HTML)', 'type' => 'html'],
-            ['name' => 'textEn', 'label' => 'Text (English, HTML)', 'type' => 'html'],
+            ['name' => 'text', 'label' => 'Text (Markdown)', 'type' => 'markdown'],
+            ['name' => 'textEn', 'label' => 'Text (English, Markdown)', 'type' => 'markdown'],
             ['name' => 'authorId', 'type' => 'ref', 'ref' => [UserRepository::class, ['surname', 'name']], 'auto' => 'creator'],
             ['name' => 'date', 'label' => 'Date', 'type' => 'date', 'required' => true],
         ],
@@ -42,8 +42,8 @@ return [
         'fields' => [
             ['name' => 'name', 'label' => 'Name', 'type' => 'string', 'required' => true],
             ['name' => 'nameEn', 'label' => 'Name (English)', 'type' => 'string'],
-            ['name' => 'text', 'label' => 'Text (HTML)', 'type' => 'html'],
-            ['name' => 'textEn', 'label' => 'Text (English, HTML)', 'type' => 'html'],
+            ['name' => 'text', 'label' => 'Text (Markdown)', 'type' => 'markdown'],
+            ['name' => 'textEn', 'label' => 'Text (English, Markdown)', 'type' => 'markdown'],
             ['name' => 'authorId', 'type' => 'ref', 'ref' => [UserRepository::class, ['surname', 'name']], 'auto' => 'creator'],
             ['name' => 'date', 'label' => 'Date', 'type' => 'date', 'required' => true],
         ],
@@ -56,8 +56,8 @@ return [
         'fields' => [
             ['name' => 'name', 'label' => 'Name', 'type' => 'string', 'required' => true],
             ['name' => 'nameEn', 'label' => 'Name (English)', 'type' => 'string'],
-            ['name' => 'desc', 'label' => 'Description (HTML)', 'type' => 'html'],
-            ['name' => 'descEn', 'label' => 'Description (English, HTML)', 'type' => 'html'],
+            ['name' => 'desc', 'label' => 'Description (Markdown)', 'type' => 'markdown'],
+            ['name' => 'descEn', 'label' => 'Description (English, Markdown)', 'type' => 'markdown'],
             [
                 'name' => 'category',
                 'label' => 'Category',
@@ -84,13 +84,13 @@ return [
         'repository' => PhotoRepository::class,
         'orderBy' => ['date' => 'desc'],
         'canCreate' => false, // photos are created through the upload form
-        'columns' => [['filename', 'Photo', 'image'], ['name', 'Name'], ['author', 'Author'], ['categoryIds', 'Categories'], ['date', 'Date'], ['visible', 'Visible']],
+        'columns' => [['_id', 'ID'], ['filename', 'Photo', 'image'], ['name', 'Name'], ['author', 'Author'], ['categoryIds', 'Categories'], ['date', 'Date'], ['visible', 'Visible']],
         'fields' => [
             ['name' => 'filename', 'type' => 'string', 'required' => true], // set by the upload: lowercase, no diacritics, same in every size directory
             ['name' => 'name', 'label' => 'Name', 'type' => 'string'],
             ['name' => 'nameEn', 'label' => 'Name (English)', 'type' => 'string'],
-            ['name' => 'desc', 'label' => 'Description', 'type' => 'text'],
-            ['name' => 'descEn', 'label' => 'Description (English)', 'type' => 'text'],
+            ['name' => 'desc', 'label' => 'Description (Markdown)', 'type' => 'markdown'],
+            ['name' => 'descEn', 'label' => 'Description (English, Markdown)', 'type' => 'markdown'],
             ['name' => 'author', 'label' => 'Author', 'type' => 'string'], // free text, e.g. the photographer
             ['name' => 'categoryIds', 'label' => 'Categories', 'type' => 'refs', 'ref' => [PhotoCategoryRepository::class, 'name']],
             ['name' => 'date', 'label' => 'Date', 'type' => 'date', 'required' => true],

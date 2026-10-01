@@ -1,0 +1,18 @@
+{
+  "name": "plant-systematics",
+  "private": true,
+  "description": "Front-end build (admin Markdown editor, public photo lightbox); the built files in public/assets are committed.",
+  "scripts": {
+    "build": "esbuild assets-src/editor.js assets-src/plant-gallery.js --bundle --minify --format=iife --loader:.png=dataurl --loader:.svg=dataurl --loader:.gif=dataurl --outdir=public/assets --entry-names=[name].bundle"
+  },
+  "dependencies": {
+    "@toast-ui/editor": "^3.2.2",
+    "blueimp-gallery": "^3.4.0"
+  },
+  "overrides": {
+    "dompurify": "^3.4.13"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

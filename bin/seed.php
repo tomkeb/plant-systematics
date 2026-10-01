@@ -26,8 +26,8 @@ foreach ($titles as $slug => [$cs, $en]) {
             'slug' => $slug,
             'name' => $cs,
             'nameEn' => $en,
-            'text' => '<p>Obsah doplníte v administraci.</p>',
-            'textEn' => '<p>Fill in the content in the admin.</p>',
+            'text' => 'Obsah doplníte v administraci.',
+            'textEn' => 'Fill in the content in the admin.',
             'authorId' => null,
             'date' => date('Y-m-d'),
         ]);

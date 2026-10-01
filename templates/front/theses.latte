@@ -7,7 +7,7 @@
 		{foreach $group['items'] as $item}
 			<h3>{$item['name']}</h3>
 			<p n:if="$item['supervisorName']">{$t['supervisor']}: {$item['supervisorName']}</p>
-			{$item['desc']|noescape}
+			{$item['desc']|markdown}
 		{else}
 			<p>{$t['noItems']}</p>
 		{/foreach}

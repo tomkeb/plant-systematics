@@ -3,7 +3,7 @@
 {block title}{$title} – Admin{/block}
 
 {block head}
-	<link rel="stylesheet" href="/assets/vendor/quill/dist/quill.snow.css">
+	<link rel="stylesheet" href="/assets/editor.bundle.css">
 {/block}
 
 {block content}
@@ -24,8 +24,10 @@
 								<label><input type="checkbox" name="{$field['name']}[]" value="{$value}" n:attr="checked => in_array((string) $value, $field['value'], true)"> {$label}</label>
 							{/foreach}
 						</fieldset>
-					{case 'html', 'textarea'}
-						<label>{$field['label']}<br><textarea name="{$field['name']}" n:attr="data-editor => $field['type'] === 'html' ? 'html'" rows="{$field['type'] === 'html' ? 12 : 4}" cols="80">{$field['value']}</textarea></label>
+					{case 'markdown'}
+						<label>{$field['label']}<br><textarea name="{$field['name']}" data-editor="markdown" rows="12" cols="80">{$field['value']}</textarea></label>
+					{case 'textarea'}
+						<label>{$field['label']}<br><textarea name="{$field['name']}" rows="4" cols="80">{$field['value']}</textarea></label>
 					{case 'select'}
 						<label>{$field['label']}<br>
 							<select name="{$field['name']}">
@@ -47,6 +49,5 @@
 {/block}
 
 {block scripts}
-	<script src="/assets/vendor/quill/dist/quill.js"></script>
-	<script src="/assets/editor.js"></script>
+	<script src="/assets/editor.bundle.js" defer></script>
 {/block}
