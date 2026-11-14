@@ -1,0 +1,19 @@
+# Production: docker compose -f docker-compose.prod.yml up -d
+# Deploy a new version: docker compose -f docker-compose.prod.yml pull && docker compose -f docker-compose.prod.yml up -d
+services:
+
+  web:
+    image: ghcr.io/tomkeb/plant-systematics:master
+    container_name: katedra
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    volumes:
+      # the SleekDB database (pages, news, theses, photos, users) and the uploaded photo files;
+      # both outlive the container, so redeploying keeps the content
+      - data:/srv/data
+      - uploads:/srv/public/uploads
+
+volumes:
+  data:
+  uploads:

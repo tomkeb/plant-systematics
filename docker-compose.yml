@@ -1,0 +1,12 @@
+# Local development: http://localhost:8080
+services:
+
+  web:
+    build: .
+    container_name: katedra
+    ports:
+      - 8080:80
+    volumes:
+      - ./:/srv
+      # keep the vendor/ built into the image instead of the host's
+      - /srv/vendor
