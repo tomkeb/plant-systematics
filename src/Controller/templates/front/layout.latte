@@ -19,9 +19,13 @@
 			<button type="submit">Log out</button>
 		</form>
 	</aside>
-	<header class="flex-horizontal jc-between ai-center gap-2 py-2">
+	<header class="site-header flex-horizontal jc-between ai-center gap-2">
 		<div class="sitename"><a href="{$homeUrl}">{$t['siteName']}</a></div>
-		<div class="site-header-right text-right gap-05 flex-vertical ai-end">
+		<button type="button" class="menu-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="Menu">
+			<svg class="icon-open" width="26" height="26" aria-hidden="true"><use href="/assets/menu.svg#menu"></use></svg>
+			<svg class="icon-close" width="26" height="26" aria-hidden="true"><use href="/assets/menu.svg#close"></use></svg>
+		</button>
+		<div class="site-header-right" id="site-menu">
 			<div class="lang-switch"><a href="{$otherLangUrl}" hreflang="{$otherLang}">{$t['otherLanguage']}</a></div>
 			<nav>
 				<ul>
@@ -32,6 +36,16 @@
 			</nav>
 		</div>
 	</header>
+	<script>
+		(function () {
+			var header = document.currentScript.previousElementSibling;
+			var toggle = header.querySelector('.menu-toggle');
+			toggle.addEventListener('click', function () {
+				var open = header.classList.toggle('menu-open');
+				toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+			});
+		})();
+	</script>
 	<main>
 		{block content}{/block}
 	</main>

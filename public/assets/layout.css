@@ -97,6 +97,84 @@ body {
   margin: 0;
 }
 
+/* hamburger button — mobile only */
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px; /* optically align the icon with the content edge */
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--black);
+}
+
+.menu-toggle:hover {
+  color: var(--primary);
+}
+
+.menu-toggle .icon-close,
+.menu-toggle[aria-expanded="true"] .icon-open {
+  display: none;
+}
+
+.menu-toggle[aria-expanded="true"] .icon-close {
+  display: block;
+}
+
+/* desktop: lang switch above the menu, both aligned right */
+.site-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--unit) * 0.5);
+  text-align: right;
+}
+
+/* mobile: sitename | hamburger on one row; lang switch + links drop below as a full-width column */
+@media (max-width: 550px) {
+  /* specific enough to beat the .gap-2 utility (contextual.css loads after this file) */
+  header.site-header {
+    flex-wrap: wrap;
+    gap: 0 calc(var(--unit) * 0.75);
+  }
+
+  .site-header .sitename {
+    flex: 1;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .site-header-right {
+    display: none;
+    width: 100%;
+    align-items: flex-start;
+    gap: calc(var(--unit) * 0.25);
+    padding-top: calc(var(--unit) * 0.75);
+    text-align: left;
+  }
+
+  .site-header.menu-open .site-header-right {
+    display: flex;
+  }
+
+  /* lang switch goes at the end of the menu */
+  .site-header-right .lang-switch {
+    order: 1;
+    margin-top: calc(var(--unit) * 0.5);
+  }
+
+  .site-header-right nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: calc(var(--unit) * 0.25);
+  }
+}
+
 /* ---------- Content width ---------- */
 
 /* header and main content share one centered column */
@@ -107,7 +185,14 @@ body {
 }
 
 .container > header {
+  padding-block: calc(var(--unit) * 1.5);
   border-bottom: 1px solid var(--faintGray);
+}
+
+@media (max-width: 550px) {
+  .container > header {
+    padding-top: calc(var(--unit) * 0.75);
+  }
 }
 
 /* ---------- Tables ---------- */
@@ -116,12 +201,14 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1.5rem;
+  border: none;
 }
 
 th, td {
   padding: calc(var(--unit) * 0.5) calc(var(--unit) * 0.75);
   text-align: left;
   vertical-align: top;
+  border: none;
 }
 
 th {
