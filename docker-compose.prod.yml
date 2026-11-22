@@ -9,11 +9,9 @@ services:
     ports:
       - 8080:80
     volumes:
-      # the SleekDB database (pages, news, theses, photos, users) and the uploaded photo files;
-      # both outlive the container, so redeploying keeps the content
-      - data:/srv/data
-      - uploads:/srv/public/uploads
-
-volumes:
-  data:
-  uploads:
+      # the SleekDB database (pages, news, theses, photos, users) and the uploaded photo files,
+      # bind-mounted from next to this file so they outlive the container and can be synced
+      # with local dev (e.g. via rsync); the folders must be writable by www-data (uid 33):
+      #   mkdir -p data public/uploads/photos && chown -R 33:33 data public/uploads
+      - ./data:/srv/data
+      - ./public/uploads:/srv/public/uploads
