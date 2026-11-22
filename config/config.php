@@ -9,7 +9,7 @@ return [
         'root' => $root,
         'data' => $root . '/data',
         'var' => $root . '/var',
-        'templates' => $root . '/templates',
+        'templates' => $root . '/src/Controller/templates',
         'uploads' => $root . '/public/uploads/photos',
     ],
     'uploadsUrl' => '/uploads/photos',

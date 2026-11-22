@@ -7,7 +7,7 @@ declare(strict_types=1);
 return [
     'messages' => [
         'cs' => [
-            'siteName' => 'Název webu',
+            'siteName' => 'Systematika vyšších rostlin',
             'newsTitle' => 'Aktuality',
             'thesesTitle' => 'Závěrečné práce',
             'galleryTitle' => 'Galerie',
@@ -26,7 +26,7 @@ return [
             'otherLanguage' => 'English',
         ],
         'en' => [
-            'siteName' => 'Site name',
+            'siteName' => 'Higher plants systematics',
             'newsTitle' => 'News',
             'thesesTitle' => 'Theses',
             'galleryTitle' => 'Gallery',

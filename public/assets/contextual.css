@@ -4,53 +4,39 @@
 /* third part: layout classes */
 
 /********************************** BG|s and colors ************************************/
+/* brand colors (primary / secondary / tertiary) and neutrals; values come from variables in base.css */
 /* backgrounds */
-.bg-yellow {background: var(--yellow) !important;}
+.bg-primary {background: var(--primary) !important;}
+.bg-primary-hover {background: var(--primary-hover) !important;}
+.bg-primary-light {background: var(--primary-light) !important;}
+.bg-secondary {background: var(--secondary) !important;}
+.bg-secondary-light {background: var(--secondary-light) !important;}
+.bg-tertiary {background: var(--tertiary) !important;}
+.bg-tertiary-light {background: var(--tertiary-light) !important;}
 .bg-white {background: var(--white) !important;}
-.bg-orange {background: var(--orange) !important;}
-.bg-blue {background: var(--blue) !important;}
-.bg-blueHover {background: var(--blueHover) !important;}
-.bg-red {background: var(--red) !important;}
-.bg-violet {background: var(--violet) !important;}
 .bg-black {background: var(--black) !important;}
-.bg-green {background: var(--green) !important;}
-.bg-greenHover {background: var(--greenHover) !important;}
-.bg-lightGray {background: var(--lightGray) !important;}
 .bg-gray {background: var(--gray) !important;}
-.bg-faintGray {background: var(--faintGray) !important;}
-.bg-faintBlue {background: var(--faintBlue) !important;}
-.bg-faintYellow {background: var(--faintYellow) !important;}
-.bg-faintRed {background: var(--faintRed) !important;}
-.bg-faintGreen {background: var(--faintGreen) !important;}
-.bg-grayHover {background: var(--grayHover) !important;}
+.bg-lightGray {background: var(--lightGray) !important;}
+.bg-lightGrayHover {background: var(--lightGrayHover) !important;}
 
 /* text colors */
-.text-green {color: var(--green)}
-.text-greenHover {color: var(--greenHover)}
-.text-blue {color: var(--blue)}
-.text-blueHover {color: var(--blueHover)}
-.text-red {color: var(--red)}
-.text-redHover {color: var(--redHover)}
-.text-wrong {color: var(--wrong)}
-.text-yellow {color: var(--yellow)}
-.text-gray {color: var(--gray)}
-.text-darkGray {color: var(--darkGray)}
+.text-primary {color: var(--primary)}
+.text-primary-hover {color: var(--primary-hover)}
+.text-secondary {color: var(--secondary)}
+.text-tertiary {color: var(--tertiary)}
 .text-white {color: var(--white)}
 .text-black {color: var(--black)}
+.text-gray {color: var(--gray)}
+.text-lightGray {color: var(--lightGray)}
 
 /********************************** TEXT CLASSES ************************************/
 .text-italic {font-style: italic;}
-.text-bold, .fw-700 {font-weight: bold !important;}
+.text-bold {font-weight: bold !important;}
 .text-center {text-align: center;}
 .text-left {text-align: left;}
 .text-right {text-align: right;}
 .text-balance {text-wrap: balance;}
 .text-small {font-size: 90%}
-
-/* e.g. for subject names */
-.fw-300 {font-weight: 300 !important;}
-/* normal font weight */
-.fw-400 {font-weight: 400 !important;}
 
 .ws-nowrap {white-space: nowrap;}
 
@@ -63,20 +49,20 @@
   flex-direction:column; 
 }
 
-.jc-flex-start, .jc-start {  justify-content: flex-start; }
-.jc-space-between, .jc-between {  justify-content: space-between; }
-.jc-space-around, .jc-around {  justify-content: space-around; }
+.jc-start {  justify-content: flex-start; }
+.jc-between {  justify-content: space-between; }
+.jc-around {  justify-content: space-around; }
 .jc-center{  justify-content: center !important; }
-.jc-flex-end, .jc-end {  justify-content: flex-end; }
+.jc-end {  justify-content: flex-end; }
 
 @media (min-width: 550px) {
     .mobile-js-end {justify-self: end;}
 }
 
-.ai-flex-start, .ai-start { align-items: flex-start; }
+.ai-start { align-items: flex-start; }
 .ai-center{ align-items: center; }
 .ai-stretch{ align-items: stretch; }
-.ai-flex-end, .ai-end { align-items: flex-end; }
+.ai-end { align-items: flex-end; }
 
 .ac-flex-start{ align-content:flex-start; }
 
