@@ -1,0 +1,29 @@
+{*
+ Common document skeleton for the whole site (front and admin).
+ Blocks:
+   title       – page title
+   layoutHead  – extra <head> content added by a section layout (front/admin)
+   head        – extra <head> content added by an individual page
+   body        – everything inside <body>
+ Variables:
+   $htmlLang   – value of <html lang>, defaults to the current locale
+*}
+<!doctype html>
+<html lang="{$htmlLang ?? $lang}">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{block title}{$t['siteName']}{/block}</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
+	<link rel="stylesheet" href="/assets/base.css">
+	<link rel="stylesheet" href="/assets/layout.css">
+	<link rel="stylesheet" href="/assets/contextual.css">
+	{block layoutHead}{/block}
+	{block head}{/block}
+</head>
+<body>
+{block body}{/block}
+</body>
+</html>

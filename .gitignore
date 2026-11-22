@@ -1,6 +1,6 @@
 /vendor/
 /var/
-/data/users/
+/data/
 /public/uploads/
 /composer.phar
 /node_modules/

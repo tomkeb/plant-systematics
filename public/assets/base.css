@@ -41,21 +41,19 @@ h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
 
-#root, #__next {
-  isolation: isolate;
-}
-
 /* ---------- Design tokens ---------- */
 
 :root {
   --white: #fff;
   --black: #1a1a1a;
   --gray: #6b6b6b;
+  --grayHover: color-mix(in oklab, var(--gray) 70%, black);
   --lightGray: #9a9a9a;
-  --lightGrayHover: #f0f0f0;
+  --faintGray: #f0f0f0;
 
   /* Only the three base colors are hand-picked; hover/light shades are derived from them. */
-  --primary: #2e7d32;        /* green */
+  /* legacy green: #2e7d32 */
+  --primary: #007d57;        /* green */
   --secondary: #f2c230;      /* yellow */
   --tertiary: #8d5a2b;       /* brown */
 
@@ -74,7 +72,6 @@ body {
   font-family: var(--font-body);
   font-size: 1rem;
   color: var(--black);
-  background: #fff;
 }
 
 h1, h2, h3, h4, h5, h6 {

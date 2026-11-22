@@ -6,7 +6,7 @@
 node_modules
 vendor
 var
-data/users
+data
 public/uploads
 assets-src
 package.json

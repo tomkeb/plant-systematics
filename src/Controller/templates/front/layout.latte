@@ -1,19 +1,13 @@
-<!doctype html>
-<html lang="{$lang}">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{block title}{$t['siteName']}{/block}</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
-	<link rel="stylesheet" href="/assets/base.css">
-	<link rel="stylesheet" href="/assets/contextual.css">
+{layout '../base.latte'}
+
+{block layoutHead}
 	<link rel="stylesheet" href="/assets/plant-gallery.bundle.css">
 	<script src="/assets/plant-gallery.bundle.js" defer></script>
 	<link rel="alternate" hreflang="{$otherLang}" href="{$otherLangUrl}">
-</head>
-<body>
+{/block}
+
+{block body}
+<div class="container">
 	<aside n:if="$isAdmin">
 		<small>Logged in as {$currentUser['email']}
 		| <a href="/admin">Admin</a>
@@ -25,26 +19,21 @@
 			<button type="submit">Log out</button>
 		</form>
 	</aside>
-	<header>
-		<p><a href="{$homeUrl}"><strong>{$t['siteName']}</strong></a></p>
-		<nav>
-			<ul>
-				{foreach $menu as $menuItem}
-					<li>
-						{if $menuItem['active']}
-							<strong><a href="{$menuItem['url']}">{$menuItem['label']}</a></strong>
-						{else}
-							<a href="{$menuItem['url']}">{$menuItem['label']}</a>
-						{/if}
-					</li>
-				{/foreach}
-				<li><a href="{$otherLangUrl}" hreflang="{$otherLang}">{$t['otherLanguage']}</a></li>
-			</ul>
-		</nav>
+	<header class="flex-horizontal jc-between ai-center gap-2 py-2">
+		<div class="sitename"><a href="{$homeUrl}">{$t['siteName']}</a></div>
+		<div class="site-header-right text-right gap-05 flex-vertical ai-end">
+			<div class="lang-switch"><a href="{$otherLangUrl}" hreflang="{$otherLang}">{$t['otherLanguage']}</a></div>
+			<nav>
+				<ul>
+					{foreach $menu as $menuItem}
+						<li><a href="{$menuItem['url']}" n:class="$menuItem['active'] ? active">{$menuItem['label']}</a></li>
+					{/foreach}
+				</ul>
+			</nav>
+		</div>
 	</header>
-	<hr>
 	<main>
 		{block content}{/block}
 	</main>
-</body>
-</html>
+</div>
+{/block}
